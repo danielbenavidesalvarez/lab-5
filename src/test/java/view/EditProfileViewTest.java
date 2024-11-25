@@ -4,64 +4,62 @@ import interface_adapter.edit_profile.EditProfileController;
 import interface_adapter.edit_profile.EditProfileViewModel;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
+
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.assertEquals; // Add this static import
 
 class EditProfileViewTest {
 
     @Test
-    void testSubmitEditProfileSuccess() {
-        // Mock dependencies
+    void testSubmitEditProfileWithValidInput() {
         EditProfileController mockController = mock(EditProfileController.class);
         EditProfileViewModel mockViewModel = mock(EditProfileViewModel.class);
 
-        // Simulate a successful message in the view model
         when(mockViewModel.getUserMessage()).thenReturn("Profile updated successfully");
 
-        // Create the view
-        EditProfileView view = new EditProfileView(mockController, mockViewModel);
+        EditProfileView view = new EditProfileView(mockViewModel);
+        view.setEditProfileController(mockController);
 
-        // Simulate user input
-        String userId = "123";
-        String name = "Jane Doe";
-        int age = 30;
-        String interests = "Reading, Traveling";
+        JTextField userIdField = (JTextField) view.getComponent(1);
+        JTextField nameField = (JTextField) view.getComponent(3);
+        JTextField ageField = (JTextField) view.getComponent(5);
+        JTextField interestsField = (JTextField) view.getComponent(7);
 
-        // Call the method to test
-        view.submitEditProfile(userId, name, age, interests);
+        userIdField.setText("testUser");
+        nameField.setText("Test Name");
+        ageField.setText("25");
+        interestsField.setText("Coding, Reading");
 
-        // Verify that the controller is called with the correct arguments
-        verify(mockController).handleEditProfile(userId, name, age, interests);
+        JButton submitButton = (JButton) view.getComponent(8);
+        submitButton.doClick();
 
-        // Verify that the view displays the correct success message
-        assertEquals("Profile updated successfully", mockViewModel.getUserMessage());
+        verify(mockController).handleEditProfile("testUser", "Test Name", 25, "Coding, Reading");
     }
 
     @Test
-    void testSubmitEditProfileFailure() {
-        // Mock dependencies
+    void testSubmitEditProfileWithInvalidAge() {
         EditProfileController mockController = mock(EditProfileController.class);
         EditProfileViewModel mockViewModel = mock(EditProfileViewModel.class);
 
-        // Simulate a failure message in the view model
-        when(mockViewModel.getUserMessage()).thenReturn("Profile update failed: Name cannot be empty");
+        EditProfileView view = new EditProfileView(mockViewModel);
+        view.setEditProfileController(mockController);
 
-        // Create the view
-        EditProfileView view = new EditProfileView(mockController, mockViewModel);
+        JTextField userIdField = (JTextField) view.getComponent(1);
+        JTextField nameField = (JTextField) view.getComponent(3);
+        JTextField ageField = (JTextField) view.getComponent(5);
+        JTextField interestsField = (JTextField) view.getComponent(7);
 
-        // Simulate invalid user input
-        String userId = "123";
-        String name = ""; // Invalid name
-        int age = 30;
-        String interests = "Reading, Traveling";
+        userIdField.setText("testUser");
+        nameField.setText("Test Name");
+        ageField.setText("-5");
+        interestsField.setText("Coding, Reading");
 
-        // Call the method to test
-        view.submitEditProfile(userId, name, age, interests);
+        JButton submitButton = (JButton) view.getComponent(8);
+        submitButton.doClick();
 
-        // Verify that the controller is called with the incorrect arguments
-        verify(mockController).handleEditProfile(userId, name, age, interests);
+        verify(mockController, never()).handleEditProfile(anyString(), anyString(), anyInt(), anyString());
 
-        // Verify that the view displays the correct failure message
-        assertEquals("Profile update failed: Name cannot be empty", mockViewModel.getUserMessage());
+        JLabel resultLabel = (JLabel) view.getComponent(9);
+        assert resultLabel.getText().equals("Validation failed: Age must be positive");
     }
 }

@@ -42,8 +42,26 @@ public class EditProfileView extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 String userId = userIdField.getText();
                 String name = nameField.getText();
-                int age = Integer.parseInt(ageField.getText());
+                String ageText = ageField.getText();
                 String interests = interestsField.getText();
+
+                // Validate inputs
+                if (userId.isEmpty() || name.isEmpty() || interests.isEmpty()) {
+                    resultLabel.setText("Validation failed: Fields cannot be empty");
+                    return;
+                }
+
+                int age;
+                try {
+                    age = Integer.parseInt(ageText);
+                    if (age <= 0) {
+                        resultLabel.setText("Validation failed: Age must be positive");
+                        return;
+                    }
+                } catch (NumberFormatException ex) {
+                    resultLabel.setText("Validation failed: Age must be a number");
+                    return;
+                }
 
                 // Delegate to the controller
                 controller.handleEditProfile(userId, name, age, interests);
