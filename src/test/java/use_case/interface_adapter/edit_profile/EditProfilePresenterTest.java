@@ -1,5 +1,7 @@
-package interface_adapter.edit_profile;
+package use_case.interface_adapter.edit_profile;
 
+import interface_adapter.edit_profile.EditProfilePresenter;
+import interface_adapter.edit_profile.EditProfileState;
 import org.junit.jupiter.api.Test;
 import use_case.edit_profile.EditProfileOutputData;
 
