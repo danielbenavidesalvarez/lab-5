@@ -1,16 +1,18 @@
 package entity;
 
 /**
- * The representation of a user in our program.
+ * A User interface that defines the structure of user entities.
  */
 public interface User {
-    String getUserId();
     String getName();
-    void setName(String name);
+    String getPassword();
+
+    // Methods for additional fields
     int getAge();
     void setAge(int age);
+
     String getInterests();
     void setInterests(String interests);
-    String getPassword();
-}
 
+    void setName(String name);
+}
