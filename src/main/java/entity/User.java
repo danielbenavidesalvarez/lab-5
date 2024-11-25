@@ -15,4 +15,6 @@ public interface User {
     void setInterests(String interests);
 
     void setName(String name);
+
+    Object getUserId();
 }
