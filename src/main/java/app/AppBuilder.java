@@ -13,6 +13,7 @@ import interface_adapter.ViewManagerModel;
 import interface_adapter.change_password.ChangePasswordController;
 import interface_adapter.change_password.ChangePasswordPresenter;
 import interface_adapter.change_password.LoggedInViewModel;
+import interface_adapter.edit_profile.EditProfileState;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
@@ -21,9 +22,13 @@ import interface_adapter.logout.LogoutPresenter;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
+import interface_adapter.edit_profile.EditProfileController;
+import interface_adapter.edit_profile.EditProfilePresenter;
+import interface_adapter.edit_profile.EditProfileViewModel;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
+import use_case.edit_profile.UserDataAccessInterface;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -33,6 +38,10 @@ import use_case.logout.LogoutOutputBoundary;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
+import use_case.edit_profile.EditProfileInputBoundary;
+import use_case.edit_profile.EditProfileInteractor;
+import use_case.edit_profile.EditProfileOutputBoundary;
+import view.EditProfileView;
 import view.LoggedInView;
 import view.LoginView;
 import view.SignupView;
@@ -57,6 +66,7 @@ public class AppBuilder {
     private final ViewManagerModel viewManagerModel = new ViewManagerModel();
     private final ViewManager viewManager = new ViewManager(cardPanel, cardLayout, viewManagerModel);
 
+
     // thought question: is the hard dependency below a problem?
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
 
@@ -66,6 +76,8 @@ public class AppBuilder {
     private LoggedInViewModel loggedInViewModel;
     private LoggedInView loggedInView;
     private LoginView loginView;
+    private EditProfileView editProfileView;
+    private EditProfileViewModel editProfileViewModel;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -100,7 +112,19 @@ public class AppBuilder {
     public AppBuilder addLoggedInView() {
         loggedInViewModel = new LoggedInViewModel();
         loggedInView = new LoggedInView(loggedInViewModel);
+
+        // Set the ViewManagerModel for navigation
+        loggedInView.setViewManagerModel(viewManagerModel);
+
         cardPanel.add(loggedInView, loggedInView.getViewName());
+        return this;
+    }
+
+    public AppBuilder addEditProfileView() {
+        EditProfileState state = new EditProfileState();
+        EditProfileViewModel viewModel = new EditProfileViewModel(state);
+        editProfileView = new EditProfileView(viewModel);
+        cardPanel.add(editProfileView, editProfileView.getViewName()); // Ensure this is executed
         return this;
     }
 
@@ -164,6 +188,28 @@ public class AppBuilder {
 
         final LogoutController logoutController = new LogoutController(logoutInteractor);
         loggedInView.setLogoutController(logoutController);
+        return this;
+    }
+
+    public AppBuilder addEditProfileUseCase() {
+        // Create the shared state
+        EditProfileState state = new EditProfileState();
+
+        // Create the presenter using the state
+        EditProfileOutputBoundary presenter = new EditProfilePresenter(state);
+
+        // Use the updated InMemoryUserDataAccessObject
+        UserDataAccessInterface userDataAccessObject = new InMemoryUserDataAccessObject();
+
+        // Create the interactor using the presenter and data access object
+        EditProfileInputBoundary interactor = new EditProfileInteractor(presenter, userDataAccessObject);
+
+        // Create the controller and wire it to the interactor
+        EditProfileController editProfileController = new EditProfileController(interactor);
+
+        // Connect the controller to the view
+        editProfileView.setEditProfileController(editProfileController);
+
         return this;
     }
 

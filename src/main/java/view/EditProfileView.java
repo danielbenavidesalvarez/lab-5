@@ -3,32 +3,62 @@ package view;
 import interface_adapter.edit_profile.EditProfileController;
 import interface_adapter.edit_profile.EditProfileViewModel;
 
-/**
- * View for the Edit Profile use case.
- * It interacts with the controller and displays the output from the view model.
- */
-public class EditProfileView {
-    private final EditProfileController controller;
-    private final EditProfileViewModel viewModel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-    public EditProfileView(EditProfileController controller, EditProfileViewModel viewModel) {
-        this.controller = controller;
+public class EditProfileView extends JPanel {
+    private final EditProfileViewModel viewModel;
+    private EditProfileController controller;
+
+    private final JTextField userIdField = new JTextField(15);
+    private final JTextField nameField = new JTextField(15);
+    private final JTextField ageField = new JTextField(5);
+    private final JTextField interestsField = new JTextField(20);
+    private final JLabel resultLabel = new JLabel();
+
+    public EditProfileView(EditProfileViewModel viewModel) {
         this.viewModel = viewModel;
+
+        // Set up the layout
+        setLayout(new GridLayout(6, 2));
+        add(new JLabel("User ID:"));
+        add(userIdField);
+        add(new JLabel("Name:"));
+        add(nameField);
+        add(new JLabel("Age:"));
+        add(ageField);
+        add(new JLabel("Interests:"));
+        add(interestsField);
+
+        JButton submitButton = new JButton("Update Profile");
+        add(submitButton);
+        add(resultLabel);
+
+        // Handle button click
+        submitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String userId = userIdField.getText();
+                String name = nameField.getText();
+                int age = Integer.parseInt(ageField.getText());
+                String interests = interestsField.getText();
+
+                // Delegate to the controller
+                controller.handleEditProfile(userId, name, age, interests);
+
+                // Update the result label
+                resultLabel.setText(viewModel.getUserMessage());
+            }
+        });
     }
 
-    /**
-     * Simulates a form submission with user input.
-     *
-     * @param userId    The user's ID.
-     * @param name      The user's name.
-     * @param age       The user's age.
-     * @param interests The user's interests.
-     */
-    public void submitEditProfile(String userId, String name, int age, String interests) {
-        // Send input to the controller
-        controller.handleEditProfile(userId, name, age, interests);
+    public void setEditProfileController(EditProfileController controller) {
+        this.controller = controller;
+    }
 
-        // Display the result to the user
-        System.out.println(viewModel.getUserMessage());
+    public String getViewName() {
+        return "EditProfileView";
     }
 }
