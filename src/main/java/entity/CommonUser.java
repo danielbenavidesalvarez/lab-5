@@ -5,7 +5,7 @@ package entity;
  */
 public class CommonUser implements User {
 
-    private final String name;
+    private String name;
     private final String password;
     private int age;
     private String interests;
@@ -27,7 +27,9 @@ public class CommonUser implements User {
 
     @Override
     public void setName(String name) {
-
+        if (name != null && !name.isEmpty()) {
+            this.name = name;
+        }
     }
 
     @Override
@@ -43,7 +45,9 @@ public class CommonUser implements User {
 
     @Override
     public void setAge(int age) {
-        this.age = age;
+        if (age > 0) {
+            this.age = age;
+        }
     }
 
     // Getter and Setter for interests
@@ -54,6 +58,8 @@ public class CommonUser implements User {
 
     @Override
     public void setInterests(String interests) {
-        this.interests = interests;
+        if (interests != null) {
+            this.interests = interests;
+        }
     }
 }

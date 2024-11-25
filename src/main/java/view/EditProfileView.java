@@ -23,6 +23,13 @@ public class EditProfileView extends JPanel {
 
         // Set up the layout
         setLayout(new GridLayout(6, 2));
+
+        userIdField.setName("userIdField");
+        nameField.setName("nameField");
+        ageField.setName("ageField");
+        interestsField.setName("interestsField");
+        resultLabel.setName("resultLabel");
+
         add(new JLabel("User ID:"));
         add(userIdField);
         add(new JLabel("Name:"));
@@ -33,6 +40,7 @@ public class EditProfileView extends JPanel {
         add(interestsField);
 
         JButton submitButton = new JButton("Update Profile");
+        submitButton.setName("submitButton");
         add(submitButton);
         add(resultLabel);
 

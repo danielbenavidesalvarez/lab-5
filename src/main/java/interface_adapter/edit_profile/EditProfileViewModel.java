@@ -16,12 +16,18 @@ public class EditProfileViewModel {
      *
      * @return A user-friendly message indicating the operation's result.
      */
+    /**
+     * Gets the formatted message for the UI.
+     *
+     * @return A user-friendly message indicating the operation's result.
+     */
     public String getUserMessage() {
         if (state.isSuccess()) {
-            return "Profile updated successfully: " + state.getMessage();
+            return state.getMessage(); // Use the existing success message directly
         }
         else {
             return "Profile update failed: " + state.getMessage();
         }
     }
+
 }
