@@ -79,6 +79,7 @@ public class AppBuilder {
     private EditProfileView editProfileView;
     private EditProfileViewModel editProfileViewModel;
 
+
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
     }
@@ -122,8 +123,8 @@ public class AppBuilder {
 
     public AppBuilder addEditProfileView() {
         EditProfileState state = new EditProfileState();
-        EditProfileViewModel viewModel = new EditProfileViewModel(state);
-        editProfileView = new EditProfileView(viewModel);
+        editProfileViewModel = new EditProfileViewModel(state);
+        editProfileView = new EditProfileView(editProfileViewModel);
         cardPanel.add(editProfileView, editProfileView.getViewName()); // Ensure this is executed
         return this;
     }
@@ -192,16 +193,10 @@ public class AppBuilder {
     }
 
     public AppBuilder addEditProfileUseCase() {
-        // Create the shared state
-        EditProfileState state = new EditProfileState();
+        // Use the existing state and viewModel
+        EditProfileOutputBoundary presenter = new EditProfilePresenter(editProfileViewModel.getState());
 
-        // Create the presenter using the state
-        EditProfileOutputBoundary presenter = new EditProfilePresenter(state);
-
-        // Use the updated InMemoryUserDataAccessObject
-        UserDataAccessInterface userDataAccessObject = new InMemoryUserDataAccessObject();
-
-        // Create the interactor using the presenter and data access object
+        // Use the shared userDataAccessObject
         EditProfileInputBoundary interactor = new EditProfileInteractor(presenter, userDataAccessObject);
 
         // Create the controller and wire it to the interactor
