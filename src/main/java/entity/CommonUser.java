@@ -1,7 +1,10 @@
 package entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
- * A simple implementation of the User interface with additional fields for age and interests.
+ * A simple implementation of the User interface with additional fields for age, interests, and liked users.
  */
 public class CommonUser implements User {
 
@@ -10,6 +13,7 @@ public class CommonUser implements User {
     private int age;
     private String interests;
     private String userid;
+    private final Set<String> likedUsers = new HashSet<>(); // Stores the IDs of liked users
 
     public CommonUser(String name, String password) {
         this.name = name;
@@ -19,6 +23,23 @@ public class CommonUser implements User {
     @Override
     public String getUserId() {
         return userid;
+    }
+
+    @Override
+    public void likeUser(User likedUser) {
+        if (likedUser == null || likedUser.getUserId() == null) {
+            throw new IllegalArgumentException("Liked user must have a valid user ID");
+        }
+        if (likedUser.getUserId().equals(this.userid)) {
+            throw new IllegalArgumentException("Users cannot like themselves");
+        }
+        if (!likedUsers.add(likedUser.getUserId())) {
+            throw new IllegalStateException("User already liked this person");
+        }
+    }
+
+    public boolean hasLiked(String userId) {
+        return likedUsers.contains(userId);
     }
 
     @Override

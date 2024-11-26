@@ -20,4 +20,6 @@ public interface User {
     void setName(String name);
 
     String getUserId();
+
+    void likeUser(User likedUser);
 }
