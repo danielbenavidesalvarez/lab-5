@@ -5,6 +5,9 @@ package entity;
  */
 public interface User {
     String getName();
+
+    void setUserId(String userid);
+
     String getPassword();
 
     // Methods for additional fields
@@ -16,5 +19,5 @@ public interface User {
 
     void setName(String name);
 
-    Object getUserId();
+    String getUserId();
 }

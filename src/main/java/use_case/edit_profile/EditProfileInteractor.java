@@ -34,6 +34,7 @@ public class EditProfileInteractor implements EditProfileInputBoundary {
         user.setName(inputData.getName());
         user.setAge(inputData.getAge());
         user.setInterests(inputData.getInterests());
+        user.setUserId(inputData.getUserId());
 
         // Step 4: Save the updated user
         dataAccess.save(user);
@@ -51,6 +52,9 @@ public class EditProfileInteractor implements EditProfileInputBoundary {
         }
         if (inputData.getInterests() == null || inputData.getInterests().isEmpty()) {
             return "Invalid input: Interests cannot be empty";
+        }
+        if (inputData.getUserId() == null || inputData.getUserId().isEmpty()) {
+            return "Invalid input: UserId cannot be empty";
         }
         return null; // No validation errors
     }

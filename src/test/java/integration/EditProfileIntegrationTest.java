@@ -21,8 +21,8 @@ class EditProfileIntegrationTest {
     @Test
     void integrationTestEditProfileSuccess() {
         // Set up the user and data access
-        CommonUser testUser = new CommonUser("user123", "password123"); // Only name and password in constructor
-        testUser.setAge(25); // Use setters for additional fields
+        CommonUser testUser = new CommonUser("user123", "password123"); // User ID and password
+        testUser.setAge(25);
         testUser.setInterests("Reading");
         InMemoryUserDataAccessObject dataAccessObject = new InMemoryUserDataAccessObject();
         dataAccessObject.save(testUser);
@@ -39,12 +39,14 @@ class EditProfileIntegrationTest {
         view.setEditProfileController(controller);
 
         // Simulate user input
+        JTextField userIdField = (JTextField) getComponentByName(view, "userIdField");
         JTextField nameField = (JTextField) getComponentByName(view, "nameField");
         JTextField ageField = (JTextField) getComponentByName(view, "ageField");
         JTextField interestsField = (JTextField) getComponentByName(view, "interestsField");
         JButton submitButton = (JButton) getComponentByName(view, "submitButton");
 
-        nameField.setText("user123"); // Name is used as the identifier
+        userIdField.setText("user123"); // User ID
+        nameField.setText("Updated User"); // New name
         ageField.setText("30"); // New age
         interestsField.setText("Music, Travel"); // New interests
 
@@ -56,9 +58,9 @@ class EditProfileIntegrationTest {
         assertEquals("Profile updated successfully", resultLabel.getText());
 
         // Validate updated user in data access object
-        CommonUser updatedUser = (CommonUser) dataAccessObject.get("user123"); // Retrieve by name
+        CommonUser updatedUser = (CommonUser) dataAccessObject.get("user123"); // Retrieve by userId
         assertNotNull(updatedUser);
-        assertEquals("user123", updatedUser.getName()); // Name should not change
+        assertEquals("Updated User", updatedUser.getName()); // Validate updated name
         assertEquals(30, updatedUser.getAge()); // Validate updated age
         assertEquals("Music, Travel", updatedUser.getInterests()); // Validate updated interests
     }

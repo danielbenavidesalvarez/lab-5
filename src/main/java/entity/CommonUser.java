@@ -9,6 +9,7 @@ public class CommonUser implements User {
     private final String password;
     private int age;
     private String interests;
+    private String userid;
 
     public CommonUser(String name, String password) {
         this.name = name;
@@ -17,7 +18,7 @@ public class CommonUser implements User {
 
     @Override
     public String getUserId() {
-        return "";
+        return userid;
     }
 
     @Override
@@ -30,6 +31,11 @@ public class CommonUser implements User {
         if (name != null && !name.isEmpty()) {
             this.name = name;
         }
+    }
+
+    @Override
+    public void setUserId(String userId) {
+        this.userid = userId;
     }
 
     @Override
