@@ -123,9 +123,11 @@ public class AppBuilder {
 
     public AppBuilder addEditProfileView() {
         EditProfileState state = new EditProfileState();
-        editProfileViewModel = new EditProfileViewModel(state);
+        editProfileViewModel = new EditProfileViewModel(state, viewManagerModel);
         editProfileView = new EditProfileView(editProfileViewModel);
-        cardPanel.add(editProfileView, editProfileView.getViewName()); // Ensure this is executed
+
+        // Add EditProfileView to the CardLayout
+        cardPanel.add(editProfileView, editProfileView.getViewName());
         return this;
     }
 

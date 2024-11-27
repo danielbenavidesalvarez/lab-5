@@ -66,7 +66,8 @@ public class EditProfileView extends JPanel {
                         resultLabel.setText("Validation failed: Age must be positive");
                         return;
                     }
-                } catch (NumberFormatException ex) {
+                }
+                catch (NumberFormatException ex) {
                     resultLabel.setText("Validation failed: Age must be a number");
                     return;
                 }
@@ -78,6 +79,16 @@ public class EditProfileView extends JPanel {
                 resultLabel.setText(viewModel.getUserMessage());
             }
         });
+        JButton backButton = new JButton("Back");
+        backButton.setName("backButton");
+        add(backButton);
+
+        backButton.addActionListener(e -> {
+            System.out.println("Back button clicked. Navigating to LoggedInView.");
+            viewModel.getViewManagerModel().setState("logged in"); // Update state to LoggedInView
+            viewModel.getViewManagerModel().firePropertyChanged(); // Notify the change
+        });
+
     }
 
     public void setEditProfileController(EditProfileController controller) {

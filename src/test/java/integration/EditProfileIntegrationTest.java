@@ -2,6 +2,7 @@ package integration;
 
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUser;
+import interface_adapter.ViewManagerModel;
 import interface_adapter.edit_profile.EditProfileController;
 import interface_adapter.edit_profile.EditProfilePresenter;
 import interface_adapter.edit_profile.EditProfileState;
@@ -29,7 +30,8 @@ class EditProfileIntegrationTest {
 
         // Set up the state, presenter, and interactor
         EditProfileState state = new EditProfileState();
-        EditProfileViewModel viewModel = new EditProfileViewModel(state);
+        ViewManagerModel viewManagerModel = new ViewManagerModel();
+        EditProfileViewModel viewModel = new EditProfileViewModel(state, viewManagerModel);
         EditProfilePresenter presenter = new EditProfilePresenter(state);
         EditProfileInputBoundary interactor = new EditProfileInteractor(presenter, dataAccessObject);
 
