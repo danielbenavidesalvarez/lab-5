@@ -108,7 +108,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                     if (viewManagerModel != null) {
                         viewManagerModel.setState("EditProfileView"); // Navigate to Edit Profile View
                         viewManagerModel.firePropertyChanged();
-                    } else {
+                    }
+                    else {
                         System.err.println("ViewManagerModel is not set! Cannot navigate to EditProfileView.");
                     }
                 }

@@ -1,4 +1,4 @@
-package use_case.interface_adapter.edit_profile;
+package interface_adapter.edit_profile;
 
 import interface_adapter.edit_profile.EditProfileController;
 import org.junit.jupiter.api.Test;

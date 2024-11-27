@@ -17,8 +17,8 @@ public class Main {
                 .addLoginUseCase()
                 .addChangePasswordUseCase()
                 .addLogoutUseCase()
-                .addEditProfileView()      // Add the Edit Profile View
-                .addEditProfileUseCase()   // Add the Edit Profile Use Case
+                .addEditProfileView()
+                .addEditProfileUseCase()
                 .build();
 
         application.pack();

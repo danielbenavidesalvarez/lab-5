@@ -46,7 +46,8 @@ public class LikeInteractor implements LikeInputBoundary {
             user.likeUser(likedUser);
             dataAccess.save(user); // Save the updated user to persist the like
             outputBoundary.present(new LikeOutputData(true, "User liked successfully"));
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             outputBoundary.present(new LikeOutputData(false, e.getMessage()));
         }
     }
