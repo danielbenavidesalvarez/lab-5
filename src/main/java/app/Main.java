@@ -19,6 +19,7 @@ public class Main {
                 .addLogoutUseCase()
                 .addEditProfileView()
                 .addEditProfileUseCase()
+                .addLikeView()
                 .build();
 
         application.pack();

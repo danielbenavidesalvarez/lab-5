@@ -7,6 +7,7 @@ import entity.User;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.edit_profile.UserDataAccessInterface; // Import the correct interface
 import use_case.login.LoginUserDataAccessInterface;
+import use_case.like.LikeUserDataAccessInterface; // Import LikeUserDataAccessInterface
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 
@@ -18,7 +19,9 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         LoginUserDataAccessInterface,
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
-        UserDataAccessInterface { // Add implementation for Edit Profile
+        UserDataAccessInterface, // Add implementation for Edit Profile
+        LikeUserDataAccessInterface {
+
 
     private final Map<String, User> users = new HashMap<>();
     private String currentUsername;

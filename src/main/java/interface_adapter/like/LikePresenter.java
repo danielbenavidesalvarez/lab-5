@@ -9,6 +9,7 @@ import use_case.like.LikeOutputData;
 public class LikePresenter implements LikeOutputBoundary {
 
     private String userMessage;
+    private LikeState likeState; // Link to the LikeState
 
     /**
      * Formats the output data into a user-friendly message.
@@ -20,9 +21,13 @@ public class LikePresenter implements LikeOutputBoundary {
         // Format the user-friendly message
         if (outputData.isSuccess()) {
             userMessage = "Like action succeeded: " + outputData.getMessage();
-        }
-        else {
+        } else {
             userMessage = "Like action failed: " + outputData.getMessage();
+        }
+
+        // Update the state with the user message
+        if (likeState != null) {
+            likeState.setUserMessage(userMessage);
         }
     }
 
@@ -33,6 +38,15 @@ public class LikePresenter implements LikeOutputBoundary {
      */
     public String getUserMessage() {
         return userMessage;
+    }
+
+    /**
+     * Links the presenter to the state.
+     *
+     * @param likeState the LikeState to update
+     */
+    public void setState(LikeState likeState) {
+        this.likeState = likeState;
     }
 
     public boolean isSuccess() {

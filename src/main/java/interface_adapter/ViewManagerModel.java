@@ -11,4 +11,9 @@ public class ViewManagerModel extends ViewModel<String> {
         this.setState("");
     }
 
+    public void navigateToLikeView() {
+        setState("LikeView");
+        firePropertyChanged();
+    }
+
 }

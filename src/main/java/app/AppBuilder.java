@@ -8,12 +8,16 @@ import javax.swing.WindowConstants;
 
 import data_access.InMemoryUserDataAccessObject;
 import entity.CommonUserFactory;
+import entity.User;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.change_password.ChangePasswordController;
 import interface_adapter.change_password.ChangePasswordPresenter;
 import interface_adapter.change_password.LoggedInViewModel;
 import interface_adapter.edit_profile.EditProfileState;
+import interface_adapter.like.LikeController;
+import interface_adapter.like.LikePresenter;
+import interface_adapter.like.LikeState;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
@@ -29,6 +33,10 @@ import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
 import use_case.edit_profile.UserDataAccessInterface;
+import use_case.like.LikeInputBoundary;
+import use_case.like.LikeInteractor;
+import use_case.like.LikeOutputBoundary;
+import use_case.like.LikeUserDataAccessInterface;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -41,11 +49,7 @@ import use_case.signup.SignupOutputBoundary;
 import use_case.edit_profile.EditProfileInputBoundary;
 import use_case.edit_profile.EditProfileInteractor;
 import use_case.edit_profile.EditProfileOutputBoundary;
-import view.EditProfileView;
-import view.LoggedInView;
-import view.LoginView;
-import view.SignupView;
-import view.ViewManager;
+import view.*;
 
 /**
  * The AppBuilder class is responsible for putting together the pieces of
@@ -129,6 +133,53 @@ public class AppBuilder {
         // Add EditProfileView to the CardLayout
         cardPanel.add(editProfileView, editProfileView.getViewName());
         return this;
+    }
+
+    public AppBuilder addLikeView() {
+        // Step 1: Create the State and Presenter
+        LikeState likeState = new LikeState();
+        LikePresenter likePresenter = new LikePresenter();
+
+        // Step 2: Set up the Data Access Layer
+        // Replace `InMemoryLikeDataAccess` with your actual implementation
+        LikeUserDataAccessInterface likeDataAccess = new InMemoryUserDataAccessObject();
+
+        // Step 3: Create the Interactor
+        LikeInputBoundary likeInputBoundary = new LikeInteractor(likePresenter, likeDataAccess);
+
+        // Step 4: Link the Presenter to the State
+        likePresenter.setState(likeState);
+
+        // Step 5: Create the Controller and View
+        LikeController likeController = new LikeController(likeInputBoundary);
+        LikeView likeView = new LikeView(likeController, likeState);
+
+        // Step 6: Register the View with ViewManagerModel
+        likeView.setViewManagerModel(viewManagerModel); // This method must exist in LikeView
+
+        // Step 7: Add the View to the CardLayout
+        cardPanel.add(likeView, "LikeView");
+
+        return this;
+    }
+
+    private LikeInputBoundary getLikeInputBoundary() {
+        LikeOutputBoundary likePresenter = new LikePresenter();
+        return new LikeInteractor(likePresenter, getLikeUserDataAccess());
+    }
+
+    private LikeUserDataAccessInterface getLikeUserDataAccess() {
+        return new LikeUserDataAccessInterface() {
+            @Override
+            public User findById(String userId) {
+                return null;
+            }
+
+            @Override
+            public void save(User user) {
+
+            }
+        }; // Replace with your actual data access implementation
     }
 
     /**

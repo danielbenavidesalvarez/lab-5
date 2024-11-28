@@ -53,4 +53,13 @@ public class LikeState {
         this.userMessage = newMessage;
         support.firePropertyChange("userMessage", oldMessage, newMessage);
     }
+
+    /**
+     * Retrieves all registered property change listeners.
+     *
+     * @return an array of registered PropertyChangeListeners
+     */
+    public PropertyChangeListener[] getPropertyChangeListeners() {
+        return support.getPropertyChangeListeners();
+    }
 }
