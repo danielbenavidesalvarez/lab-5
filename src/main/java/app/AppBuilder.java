@@ -106,6 +106,7 @@ public class AppBuilder {
     public AppBuilder addLoginView() {
         loginViewModel = new LoginViewModel();
         loginView = new LoginView(loginViewModel);
+        loginView.setViewManagerModel(viewManagerModel);
         cardPanel.add(loginView, loginView.getViewName());
         return this;
     }
@@ -266,7 +267,7 @@ public class AppBuilder {
      * @return the application
      */
     public JFrame build() {
-        final JFrame application = new JFrame("Login Example");
+        final JFrame application = new JFrame("Dating App Vamos");
         application.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         application.add(cardPanel);
