@@ -6,12 +6,19 @@ import interface_adapter.analytics.AnalyticsState;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Scanner;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.data.category.DefaultCategoryDataset;
 
 public class AnalyticsView extends JPanel {
     private final AnalyticsController controller;
     private final AnalyticsState state;
     private ViewManagerModel viewManagerModel; // For navigation
+
+    // Chart dataset and panel
+    private DefaultCategoryDataset dataset;
+    private ChartPanel chartPanel;
 
     public AnalyticsView(AnalyticsController controller, AnalyticsState state) {
         this.controller = controller;
@@ -23,10 +30,17 @@ public class AnalyticsView extends JPanel {
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         this.add(titleLabel);
 
+        // Create the chart and add it to the view
+        JFreeChart chart = createChart();
+        chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(500, 300));
+        this.add(chartPanel);
+
         // Fetch analytics when the view is initialized
         String userId = "dummy_user_id"; // Replace with actual user ID logic
         controller.executeAnalytics(userId);
 
+        // Display the analytics data in text form (optional)
         JLabel likesGivenLabel = new JLabel("Likes Given: " + state.getLikesGiven());
         JLabel likesReceivedLabel = new JLabel("Likes Received: " + state.getLikesReceived());
         JLabel matchesLabel = new JLabel("Matches: " + state.getMatches());
@@ -37,47 +51,39 @@ public class AnalyticsView extends JPanel {
         this.add(matchesLabel);
         this.add(sharedInterestsLabel);
 
+        // Back button
         JButton backButton = new JButton("Back");
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.addActionListener(e -> navigateToLoggedInView());
         this.add(backButton);
+
+        // Update the chart with fetched data
+        updateChart();
     }
 
+    private JFreeChart createChart() {
+        // Initialize the dataset
+        dataset = new DefaultCategoryDataset();
+        dataset.addValue(0, "Values", "Likes Given");
+        dataset.addValue(0, "Values", "Likes Received");
+        dataset.addValue(0, "Values", "Matches");
+        dataset.addValue(0, "Values", "Shared Interests");
 
-    public void displayMenu() {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("=== Analytics Menu ===");
-        System.out.println("1. View Analytics");
-        System.out.println("0. Back to Logged In View");
-        System.out.print("Enter your choice: ");
-
-        int choice = scanner.nextInt();
-        scanner.nextLine(); // Consume newline
-
-        switch (choice) {
-            case 1:
-                executeAnalytics(scanner);
-                break;
-            case 0:
-                navigateToLoggedInView();
-                break;
-            default:
-                System.out.println("Invalid choice. Please try again.");
-                break;
-        }
+        // Create the chart
+        return ChartFactory.createBarChart(
+                "Analytics Summary", // Chart title
+                "Category",          // X-axis label
+                "Count",             // Y-axis label
+                dataset              // Dataset
+        );
     }
 
-    private void executeAnalytics(Scanner scanner) {
-        System.out.print("Enter your user ID: ");
-        String userId = scanner.nextLine();
-
-        try {
-            controller.executeAnalytics(userId);
-            state.displayAnalytics();
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
+    private void updateChart() {
+        // Fetch data from the state and update the dataset
+        dataset.setValue(state.getLikesGiven(), "Values", "Likes Given");
+        dataset.setValue(state.getLikesReceived(), "Values", "Likes Received");
+        dataset.setValue(state.getMatches(), "Values", "Matches");
+        dataset.setValue(state.getSharedInterests(), "Values", "Shared Interests");
     }
 
     private void navigateToLoggedInView() {
