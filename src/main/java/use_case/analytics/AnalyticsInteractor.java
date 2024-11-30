@@ -3,7 +3,6 @@ package use_case.analytics;
 import entity.User;
 
 public class AnalyticsInteractor implements AnalyticsInputBoundary {
-
     private final AnalyticsOutputBoundary presenter;
     private final AnalyticsUserDataAccessInterface userDataAccess;
 
@@ -14,22 +13,25 @@ public class AnalyticsInteractor implements AnalyticsInputBoundary {
 
     @Override
     public void execute(AnalyticsInputData inputData) {
-        User user = userDataAccess.getUserById(inputData.getUserId());
+        System.out.println("Interactor: Executing for user ID: " + inputData.getUserId());
 
+        User user = userDataAccess.getUserById(inputData.getUserId());
         if (user == null) {
+            System.out.println("Interactor: User not found.");
             throw new IllegalArgumentException("User not found.");
         }
 
-        // Retrieve analytics data
         int likesGiven = user.getLikedUsers().size();
         int likesReceived = user.getLikesReceivedCount();
-        int matches = userDataAccess.countMatches(user.getUserId());
-        int sharedInterests = userDataAccess.countSharedInterests(user.getUserId());
+        int matches = userDataAccess.countMatches(inputData.getUserId());
+        int sharedInterests = userDataAccess.countSharedInterests(inputData.getUserId());
 
-        // Create the output data
+        System.out.println("Interactor: Likes Given = " + likesGiven);
+        System.out.println("Interactor: Likes Received = " + likesReceived);
+        System.out.println("Interactor: Matches = " + matches);
+        System.out.println("Interactor: Shared Interests = " + sharedInterests);
+
         AnalyticsOutputData outputData = new AnalyticsOutputData(likesGiven, likesReceived, matches, sharedInterests);
-
-        // Send the output to the presenter
         presenter.present(outputData);
     }
 }

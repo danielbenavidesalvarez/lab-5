@@ -3,7 +3,9 @@ package data_access;
 import java.util.HashMap;
 import java.util.Map;
 
+import entity.CommonUser;
 import entity.User;
+import use_case.analytics.AnalyticsUserDataAccessInterface;
 import use_case.change_password.ChangePasswordUserDataAccessInterface;
 import use_case.edit_profile.UserDataAccessInterface; // Import the correct interface
 import use_case.login.LoginUserDataAccessInterface;
@@ -20,7 +22,8 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         ChangePasswordUserDataAccessInterface,
         LogoutUserDataAccessInterface,
         UserDataAccessInterface, // Add implementation for Edit Profile
-        LikeUserDataAccessInterface {
+        LikeUserDataAccessInterface,
+        AnalyticsUserDataAccessInterface {
 
 
     private final Map<String, User> users = new HashMap<>();
@@ -61,5 +64,35 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public User findById(String userId) {
         return users.get(userId); // Find user by ID
+    }
+
+    @Override
+    public User getUserById(String userId) {
+        System.out.println("Data Access: Fetching user by ID: " + userId);
+
+        // Create a dummy user with a valid userId
+        CommonUser user = new CommonUser("John Doe", "password123");
+        user.setUserId(userId);
+
+        // Create a liked user with a valid userId
+        CommonUser likedUser = new CommonUser("Jane Smith", "password123");
+        likedUser.setUserId("liked_user_123");
+
+        // Add the liked user to this user's likes
+        user.likeUser(likedUser);
+
+        return user;
+    }
+
+    @Override
+    public int countMatches(String userId) {
+        System.out.println("Data Access: Counting matches for user ID: " + userId);
+        return 2; // Dummy data
+    }
+
+    @Override
+    public int countSharedInterests(String userId) {
+        System.out.println("Data Access: Counting shared interests for user ID: " + userId);
+        return 1; // Dummy data
     }
 }

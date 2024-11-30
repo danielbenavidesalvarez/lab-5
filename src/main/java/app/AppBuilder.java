@@ -11,6 +11,10 @@ import entity.CommonUserFactory;
 import entity.User;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.analytics.AnalyticsController;
+import interface_adapter.analytics.AnalyticsPresenter;
+import interface_adapter.analytics.AnalyticsState;
+import interface_adapter.analytics.AnalyticsViewModel;
 import interface_adapter.change_password.ChangePasswordController;
 import interface_adapter.change_password.ChangePasswordPresenter;
 import interface_adapter.change_password.LoggedInViewModel;
@@ -29,6 +33,8 @@ import interface_adapter.signup.SignupViewModel;
 import interface_adapter.edit_profile.EditProfileController;
 import interface_adapter.edit_profile.EditProfilePresenter;
 import interface_adapter.edit_profile.EditProfileViewModel;
+import use_case.analytics.AnalyticsInteractor;
+import use_case.analytics.AnalyticsUserDataAccessInterface;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
@@ -161,6 +167,39 @@ public class AppBuilder {
         // Step 7: Add the View to the CardLayout
         cardPanel.add(likeView, "LikeView");
 
+        return this;
+    }
+
+    public AppBuilder addAnalyticsView() {
+        // Step 1: Create the State and ViewModel
+        AnalyticsViewModel analyticsViewModel = new AnalyticsViewModel();
+        AnalyticsState analyticsState = new AnalyticsState(analyticsViewModel);
+
+        // Step 2: Set up the Data Access Layer
+        AnalyticsUserDataAccessInterface analyticsDataAccess = new InMemoryUserDataAccessObject();
+
+        // Step 3: Create the Presenter
+        AnalyticsPresenter analyticsPresenter = new AnalyticsPresenter(analyticsViewModel);
+
+        // Step 4: Create the Interactor
+        AnalyticsInteractor analyticsInteractor = new AnalyticsInteractor(analyticsPresenter, analyticsDataAccess);
+
+        // Step 5: Create the Controller
+        AnalyticsController analyticsController = new AnalyticsController(analyticsInteractor);
+
+        // Step 6: Create the View
+        AnalyticsView analyticsView = new AnalyticsView(analyticsController, analyticsState);
+        analyticsView.setViewManagerModel(viewManagerModel); // Inject the ViewManagerModel
+
+        // Step 7: Add the View to the CardLayout
+        cardPanel.add(analyticsView, "AnalyticsView");
+
+        return this;
+    }
+
+
+    public AppBuilder addAnalyticsUseCase() {
+        // All components have already been initialized in addAnalyticsView, nothing additional to set up here.
         return this;
     }
 

@@ -15,5 +15,9 @@ public class ViewManagerModel extends ViewModel<String> {
         setState("LikeView");
         firePropertyChanged();
     }
+    public void navigateToAnalyticsView() {
+        setState("AnalyticsView");
+        firePropertyChanged();
+    }
 
 }
