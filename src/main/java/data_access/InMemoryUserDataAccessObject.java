@@ -12,6 +12,7 @@ import use_case.login.LoginUserDataAccessInterface;
 import use_case.like.LikeUserDataAccessInterface; // Import LikeUserDataAccessInterface
 import use_case.logout.LogoutUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
+import use_case.report_account.ReportAccountUserDataAccessInterface;
 
 /**
  * In-memory implementation of the DAO for storing user data. This implementation does
@@ -23,11 +24,27 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         LogoutUserDataAccessInterface,
         UserDataAccessInterface, // Add implementation for Edit Profile
         LikeUserDataAccessInterface,
-        AnalyticsUserDataAccessInterface {
+        AnalyticsUserDataAccessInterface,
+        ReportAccountUserDataAccessInterface{
 
 
     private final Map<String, User> users = new HashMap<>();
     private String currentUsername;
+
+    public InMemoryUserDataAccessObject() {
+        // Add dummy users to the in-memory storage for testing
+        CommonUser user1 = new CommonUser("daniel", "daniel");
+        user1.setUserId("daniel");
+        users.put(user1.getUserId(), user1);
+
+        CommonUser user2 = new CommonUser("luis", "luis");
+        user2.setUserId("luis");
+        users.put(user2.getUserId(), user2);
+
+        CommonUser user3 = new CommonUser("aryan", "aryan");
+        user3.setUserId("aryan");
+        users.put(user3.getUserId(), user3);
+    }
 
     @Override
     public boolean existsByName(String identifier) {
@@ -103,5 +120,11 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public int countLikesReceived(String userId) {
         return 2;
+    }
+
+    @Override
+    public boolean doesUserExist(String userId) {
+        // Check if the user exists in the in-memory storage
+        return users.containsKey(userId);
     }
 }

@@ -23,6 +23,7 @@ public class Main {
                 .addLikeUseCase()
                 .addAnalyticsView()
                 .addAnalyticsUseCase()
+                .addReportAccountView()
                 .build();
 
         application.pack();

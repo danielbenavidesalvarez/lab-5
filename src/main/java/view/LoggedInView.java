@@ -1,6 +1,6 @@
 package view;
 
-import java.awt.Component;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import javax.swing.BoxLayout;
@@ -36,7 +36,8 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final JButton changePassword;
     private final JButton editProfileButton;
     private final JButton likeButton;
-    private final JButton analyticsButton; // New Analytics button
+    private final JButton analyticsButton;
+    private final JButton reportAccountButton;
 
     public LoggedInView(LoggedInViewModel loggedInViewModel) {
         this.loggedInViewModel = loggedInViewModel;
@@ -51,7 +52,11 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         final JLabel usernameInfo = new JLabel("Currently logged in: ");
         username = new JLabel();
 
+
+        // Panel for buttons with FlowLayout to align them in a single row
         final JPanel buttons = new JPanel();
+        buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Add horizontal alignment and spacing
+
         logOut = new JButton("Log Out");
         buttons.add(logOut);
 
@@ -67,7 +72,12 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         analyticsButton = new JButton("Analytics");
         buttons.add(analyticsButton);
 
+        reportAccountButton = new JButton("Report Account");
+        buttons.add(reportAccountButton); // Add button to the layout
+
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+
 
         passwordInputField.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -146,7 +156,17 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                     }
                 }
         );
-
+        // Action listener for Report Account button
+        reportAccountButton.addActionListener(evt -> {
+            if (viewManagerModel != null) {
+                viewManagerModel.setState("ReportAccountView"); // Navigate to Report Account View
+                viewManagerModel.firePropertyChanged();
+            }
+            else {
+                System.err.println("ViewManagerModel is not set! Cannot navigate to ReportAccountView.");
+            }
+        });
+        // Add the button to the view
         this.add(title);
         this.add(usernameInfo);
         this.add(username);

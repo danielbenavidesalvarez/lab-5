@@ -6,7 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import data_access.InMemoryReportAccountRepository;
 import data_access.InMemoryUserDataAccessObject;
+import data_access.ReportAccountRepository;
 import entity.CommonUserFactory;
 import entity.User;
 import entity.UserFactory;
@@ -28,12 +30,17 @@ import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
 import interface_adapter.logout.LogoutController;
 import interface_adapter.logout.LogoutPresenter;
+import interface_adapter.report_account.ReportAccountController;
+import interface_adapter.report_account.ReportAccountPresenter;
+import interface_adapter.report_account.ReportAccountState;
+import interface_adapter.report_account.ReportAccountViewModel;
 import interface_adapter.signup.SignupController;
 import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.edit_profile.EditProfileController;
 import interface_adapter.edit_profile.EditProfilePresenter;
 import interface_adapter.edit_profile.EditProfileViewModel;
+import org.jetbrains.annotations.NotNull;
 import use_case.analytics.AnalyticsInteractor;
 import use_case.analytics.AnalyticsUserDataAccessInterface;
 import use_case.change_password.ChangePasswordInputBoundary;
@@ -50,6 +57,8 @@ import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
+import use_case.report_account.ReportAccountInteractor;
+import use_case.report_account.ReportAccountUserDataAccessInterface;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
@@ -209,6 +218,42 @@ public class AppBuilder {
         return this;
     }
 
+    public AppBuilder addReportAccountView() {
+        // Create ViewModel and State
+        ReportAccountViewModel reportAccountViewModel = new ReportAccountViewModel();
+        ReportAccountInteractor reportAccountInteractor = getReportAccountInteractor(reportAccountViewModel);
+
+        // Create Controller
+        ReportAccountController reportAccountController = new ReportAccountController(reportAccountInteractor);
+
+        // Create the View
+        ReportAccountView reportAccountView = new ReportAccountView(reportAccountController, reportAccountViewModel);
+        reportAccountView.setViewManagerModel(viewManagerModel); // Set ViewManagerModel for navigation
+
+        // Add View to the CardLayout
+        cardPanel.add(reportAccountView, "ReportAccountView");
+
+        return this;
+    }
+
+    private static @NotNull ReportAccountInteractor getReportAccountInteractor(ReportAccountViewModel reportAccountViewModel) {
+        ReportAccountState reportAccountState = new ReportAccountState();
+
+        // Create Presenter
+        ReportAccountPresenter reportAccountPresenter = new ReportAccountPresenter(reportAccountViewModel);
+
+        // Create Repository and Data Access
+        ReportAccountRepository reportAccountRepository = new InMemoryReportAccountRepository();
+        ReportAccountUserDataAccessInterface reportAccountUserDataAccess = new InMemoryUserDataAccessObject();
+
+        // Create Interactor
+        ReportAccountInteractor reportAccountInteractor = new ReportAccountInteractor(
+                reportAccountPresenter,
+                reportAccountRepository,
+                reportAccountUserDataAccess
+        );
+        return reportAccountInteractor;
+    }
 
     public AppBuilder addAnalyticsUseCase() {
         // All components have already been initialized in addAnalyticsView, nothing additional to set up here.
