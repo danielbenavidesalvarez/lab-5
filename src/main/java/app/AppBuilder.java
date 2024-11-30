@@ -18,6 +18,7 @@ import interface_adapter.edit_profile.EditProfileState;
 import interface_adapter.like.LikeController;
 import interface_adapter.like.LikePresenter;
 import interface_adapter.like.LikeState;
+import interface_adapter.like.LikeViewModel;
 import interface_adapter.login.LoginController;
 import interface_adapter.login.LoginPresenter;
 import interface_adapter.login.LoginViewModel;
@@ -82,6 +83,8 @@ public class AppBuilder {
     private LoginView loginView;
     private EditProfileView editProfileView;
     private EditProfileViewModel editProfileViewModel;
+    private LikeView likeView;
+    private LikeViewModel likeViewModel;
 
 
     public AppBuilder() {
@@ -137,35 +140,44 @@ public class AppBuilder {
     }
 
     public AppBuilder addLikeView() {
-        // Step 1: Create the State and Presenter
-        LikeState likeState = new LikeState();
-        LikePresenter likePresenter = new LikePresenter();
 
-        // Step 2: Set up the Data Access Layer
-        // Replace `InMemoryLikeDataAccess` with your actual implementation
-        LikeUserDataAccessInterface likeDataAccess = new InMemoryUserDataAccessObject();
+        likeViewModel = new LikeViewModel();
+        likeView = new LikeView(likeViewModel);
 
-        // Step 3: Create the Interactor
-        LikeInputBoundary likeInputBoundary = new LikeInteractor(likePresenter, likeDataAccess);
+        // Set the ViewManagerModel for navigation
+        likeView.setViewManagerModel(viewManagerModel);
 
-        // Step 4: Link the Presenter to the State
-        likePresenter.setState(likeState);
-
-        // Step 5: Create the Controller and View
-        LikeController likeController = new LikeController(likeInputBoundary);
-        LikeView likeView = new LikeView(likeController, likeState);
-
-        // Step 6: Register the View with ViewManagerModel
-        likeView.setViewManagerModel(viewManagerModel); // This method must exist in LikeView
-
-        // Step 7: Add the View to the CardLayout
-        cardPanel.add(likeView, "LikeView");
-
+        cardPanel.add(likeView, likeView.getViewName());
         return this;
+//        // Step 1: Create the State and Presenter
+//        LikeState likeState = new LikeState();
+//        LikePresenter likePresenter = new LikePresenter();
+//
+//        // Step 2: Set up the Data Access Layer
+//        // Replace `InMemoryLikeDataAccess` with your actual implementation
+//        LikeUserDataAccessInterface likeDataAccess = new InMemoryUserDataAccessObject();
+//
+//        // Step 3: Create the Interactor
+//        LikeInputBoundary likeInputBoundary = new LikeInteractor(likePresenter, likeDataAccess);
+//
+//        // Step 4: Link the Presenter to the State
+//        likePresenter.setState(likeState);
+//
+//        // Step 5: Create the Controller and View
+//        LikeController likeController = new LikeController(likeInputBoundary);
+//        LikeView likeView = new LikeView(likeController, likeState);
+//
+//        // Step 6: Register the View with ViewManagerModel
+//        likeView.setViewManagerModel(viewManagerModel); // This method must exist in LikeView
+//
+//        // Step 7: Add the View to the CardLayout
+//        cardPanel.add(likeView, "LikeView");
+//
+//        return this;
     }
 
     private LikeInputBoundary getLikeInputBoundary() {
-        LikeOutputBoundary likePresenter = new LikePresenter();
+        LikeOutputBoundary likePresenter = new LikePresenter(likeViewModel);
         return new LikeInteractor(likePresenter, getLikeUserDataAccess());
     }
 
@@ -246,6 +258,7 @@ public class AppBuilder {
         return this;
     }
 
+    @SuppressWarnings("checkstyle:FinalLocalVariable")
     public AppBuilder addEditProfileUseCase() {
         // Use the existing state and viewModel
         EditProfileOutputBoundary presenter = new EditProfilePresenter(editProfileViewModel.getState());
@@ -259,6 +272,17 @@ public class AppBuilder {
         // Connect the controller to the view
         editProfileView.setEditProfileController(editProfileController);
 
+        return this;
+    }
+
+    public AppBuilder addLikeUseCase() {
+        final LikeOutputBoundary likeOutputBoundary = new LikePresenter(likeViewModel);
+
+        final LikeInputBoundary likeInteractor =
+                new LikeInteractor(likeOutputBoundary, userDataAccessObject);
+
+        final LikeController likeController = new LikeController(likeInteractor);
+        likeView.setLikeController(likeController);
         return this;
     }
 

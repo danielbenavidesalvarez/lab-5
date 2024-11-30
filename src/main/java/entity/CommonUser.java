@@ -36,6 +36,7 @@ public class CommonUser implements User {
         if (!likedUsers.add(likedUser.getUserId())) {
             throw new IllegalStateException("User already liked this person");
         }
+        likedUsers.add(likedUser.getUserId());
     }
 
     public boolean hasLiked(String userId) {

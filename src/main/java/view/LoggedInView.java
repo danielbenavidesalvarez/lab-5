@@ -122,7 +122,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
         likeButton.addActionListener(
                 evt -> {
                     if (viewManagerModel != null) {
-                        viewManagerModel.setState("LikeView"); // Navigate to Like View
+                        viewManagerModel.setState("like view"); // Navigate to Like View
                         viewManagerModel.firePropertyChanged();
                     } else {
                         System.err.println("ViewManagerModel is not set! Cannot navigate to LikeView.");
