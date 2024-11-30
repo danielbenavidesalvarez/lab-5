@@ -87,12 +87,21 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     @Override
     public int countMatches(String userId) {
         System.out.println("Data Access: Counting matches for user ID: " + userId);
-        return 2; // Dummy data
+        return 1; // Dummy data
     }
 
     @Override
     public int countSharedInterests(String userId) {
         System.out.println("Data Access: Counting shared interests for user ID: " + userId);
-        return 1; // Dummy data
+        return 4; // Dummy data
+    }
+    public int countLikesGiven(String userId){
+        System.out.println("Data Access: Counting shared interests for user ID: " + userId);
+        return 10; // Dummy data
+    }
+
+    @Override
+    public int countLikesReceived(String userId) {
+        return 2;
     }
 }

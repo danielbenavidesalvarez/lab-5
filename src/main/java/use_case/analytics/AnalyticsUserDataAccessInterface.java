@@ -29,4 +29,7 @@ public interface AnalyticsUserDataAccessInterface {
      * @return the number of users with shared interests.
      */
     int countSharedInterests(String userId);
+
+    int countLikesReceived(String userId);
+    int countLikesGiven(String userId);
 }

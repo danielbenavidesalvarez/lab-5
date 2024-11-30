@@ -21,8 +21,8 @@ public class AnalyticsInteractor implements AnalyticsInputBoundary {
             throw new IllegalArgumentException("User not found.");
         }
 
-        int likesGiven = user.getLikedUsers().size();
-        int likesReceived = user.getLikesReceivedCount();
+        int likesGiven = userDataAccess.countLikesGiven(inputData.getUserId());
+        int likesReceived = userDataAccess.countLikesReceived(inputData.getUserId());
         int matches = userDataAccess.countMatches(inputData.getUserId());
         int sharedInterests = userDataAccess.countSharedInterests(inputData.getUserId());
 
