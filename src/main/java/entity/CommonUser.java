@@ -3,17 +3,15 @@ package entity;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * A simple implementation of the User interface with additional fields for age, interests, and liked users.
- */
 public class CommonUser implements User {
 
     private String name;
     private final String password;
     private int age;
     private String interests;
-    private String userid;
-    private final Set<String> likedUsers = new HashSet<>(); // Stores the IDs of liked users
+    private String userId;
+    private final Set<String> likedUsers = new HashSet<>();
+    private int likesReceivedCount; // Tracks the number of likes received by this user.
 
     public CommonUser(String name, String password) {
         this.name = name;
@@ -22,7 +20,7 @@ public class CommonUser implements User {
 
     @Override
     public String getUserId() {
-        return userid;
+        return userId;
     }
 
     @Override
@@ -30,12 +28,27 @@ public class CommonUser implements User {
         if (likedUser == null || likedUser.getUserId() == null) {
             throw new IllegalArgumentException("Liked user must have a valid user ID");
         }
-        if (likedUser.getUserId().equals(this.userid)) {
+        if (likedUser.getUserId().equals(this.userId)) {
             throw new IllegalArgumentException("Users cannot like themselves");
         }
         if (!likedUsers.add(likedUser.getUserId())) {
             throw new IllegalStateException("User already liked this person");
         }
+        if (likedUser instanceof CommonUser) {
+            ((CommonUser) likedUser).incrementLikesReceived();
+        }
+    }
+
+    private void incrementLikesReceived() {
+        this.likesReceivedCount++;
+    }
+
+    public int getLikesReceivedCount() {
+        return likesReceivedCount;
+    }
+
+    public Set<String> getLikedUsers() {
+        return likedUsers;
     }
 
     public boolean hasLiked(String userId) {
@@ -56,7 +69,7 @@ public class CommonUser implements User {
 
     @Override
     public void setUserId(String userId) {
-        this.userid = userId;
+        this.userId = userId;
     }
 
     @Override
@@ -64,7 +77,6 @@ public class CommonUser implements User {
         return password;
     }
 
-    // Getter and Setter for age
     @Override
     public int getAge() {
         return age;
@@ -77,7 +89,6 @@ public class CommonUser implements User {
         }
     }
 
-    // Getter and Setter for interests
     @Override
     public String getInterests() {
         return interests;
