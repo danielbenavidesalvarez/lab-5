@@ -9,7 +9,7 @@ import use_case.like.LikeInputData;
  */
 public class LikeController {
 
-    private final LikeInputBoundary likeInputBoundary;
+    private final LikeInputBoundary likeinteractor;
 
     /**
      * Constructor for the LikeController.
@@ -17,7 +17,7 @@ public class LikeController {
      * @param likeInputBoundary the input boundary for the Like use case
      */
     public LikeController(LikeInputBoundary likeInputBoundary) {
-        this.likeInputBoundary = likeInputBoundary;
+        this.likeinteractor = likeInputBoundary;
     }
 
     /**
@@ -33,12 +33,12 @@ public class LikeController {
         if (likedUserId == null || likedUserId.isEmpty()) {
             throw new IllegalArgumentException("Liked user ID cannot be null or empty.");
         }
-        if (likerUserId.equals(likedUserId)) {
-            throw new IllegalArgumentException("Users cannot like themselves.");
-        }
+//        if (likerUserId.equals(likedUserId)) {
+//            throw new IllegalArgumentException("Users cannot like themselves.");
+//        }
 
         // Create input data and delegate the request to the interactor
         LikeInputData inputData = new LikeInputData(likerUserId, likedUserId);
-        likeInputBoundary.execute(inputData);
+        likeinteractor.execute(inputData);
     }
 }

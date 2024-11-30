@@ -20,8 +20,7 @@ public class Main {
                 .addEditProfileView()
                 .addEditProfileUseCase()
                 .addLikeView()
-                .addAnalyticsView()
-                .addAnalyticsUseCase()
+                .addLikeUseCase()
                 .build();
 
         application.pack();
