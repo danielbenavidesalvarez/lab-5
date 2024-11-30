@@ -4,11 +4,16 @@ import data_access.ReportAccountRepository;
 
 public class ReportAccountInteractor implements ReportAccountInputBoundary {
     private final ReportAccountOutputBoundary outputBoundary;
-    private final ReportAccountRepository repository; // Assumes we need a repository for persistence
+    private final ReportAccountRepository repository;
+    private final ReportAccountUserDataAccessInterface userDataAccess;
 
-    public ReportAccountInteractor(ReportAccountOutputBoundary outputBoundary, ReportAccountRepository repository) {
+    public ReportAccountInteractor(
+            ReportAccountOutputBoundary outputBoundary,
+            ReportAccountRepository repository,
+            ReportAccountUserDataAccessInterface userDataAccess) {
         this.outputBoundary = outputBoundary;
         this.repository = repository;
+        this.userDataAccess = userDataAccess; // Correctly initializing userDataAccess
     }
 
     @Override
@@ -20,6 +25,10 @@ public class ReportAccountInteractor implements ReportAccountInputBoundary {
         // Validate input
         if (reportedUserId == null || reportedUserId.trim().isEmpty()) {
             outputBoundary.presentReportResult(new ReportAccountOutputData(false, "User ID cannot be empty."));
+            return;
+        }
+        if (!userDataAccess.doesUserExist(reportedUserId)) {
+            outputBoundary.presentReportResult(new ReportAccountOutputData(false, "Reported user does not exist."));
             return;
         }
         if (issueType == null || issueType.trim().isEmpty()) {

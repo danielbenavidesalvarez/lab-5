@@ -21,6 +21,8 @@ public class Main {
                 .addEditProfileUseCase()
                 .addLikeView()
                 .addLikeUseCase()
+                .addAnalyticsView()
+                .addAnalyticsUseCase()
                 .build();
 
         application.pack();

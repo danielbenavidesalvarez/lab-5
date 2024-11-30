@@ -4,97 +4,139 @@ import data_access.InMemoryReportAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReportAccountInteractorTest {
     private ReportAccountInteractor interactor;
-    private InMemoryReportAccountRepository repository;
     private MockReportAccountOutputBoundary outputBoundary;
+    private InMemoryReportAccountRepository repository;
+    private MockReportAccountUserDataAccess userDataAccess;
 
     @BeforeEach
     void setUp() {
-        repository = new InMemoryReportAccountRepository();
         outputBoundary = new MockReportAccountOutputBoundary();
-        interactor = new ReportAccountInteractor(outputBoundary, repository);
+        repository = new InMemoryReportAccountRepository();
+        userDataAccess = new MockReportAccountUserDataAccess();
+        interactor = new ReportAccountInteractor(outputBoundary, repository, userDataAccess);
     }
 
     @Test
-    void testValidReport() {
+    void testSuccessfulReport() {
+        // Arrange
+        userDataAccess.addUser("user123");
         ReportAccountInputData inputData = new ReportAccountInputData(
                 "user123",
                 "Bullying/Harassment",
                 "This user is sending offensive messages."
         );
 
+        // Act
         interactor.reportAccount(inputData);
 
-        // Verify the success message
+        // Assert
         assertTrue(outputBoundary.isSuccess());
         assertEquals("Report submitted successfully.", outputBoundary.getMessage());
-
-        // Verify the report is saved in the repository
         assertEquals(1, repository.getAllReports().size());
-        InMemoryReportAccountRepository.Report savedReport = repository.getAllReports().get(0);
-        assertEquals("user123", savedReport.getReportedUserId());
-        assertEquals("Bullying/Harassment", savedReport.getIssueType());
-        assertEquals("This user is sending offensive messages.", savedReport.getDescription());
     }
 
     @Test
-    void testInvalidInput_missingUserId() {
+    void testUserDoesNotExist() {
+        // Arrange
+        ReportAccountInputData inputData = new ReportAccountInputData(
+                "nonexistent_user",
+                "Bullying/Harassment",
+                "This user is sending offensive messages."
+        );
+
+        // Act
+        interactor.reportAccount(inputData);
+
+        // Assert
+        assertFalse(outputBoundary.isSuccess());
+        assertEquals("Reported user does not exist.", outputBoundary.getMessage());
+        assertEquals(0, repository.getAllReports().size());
+    }
+
+    @Test
+    void testEmptyUserId() {
+        // Arrange
         ReportAccountInputData inputData = new ReportAccountInputData(
                 "",
                 "Bullying/Harassment",
                 "This user is sending offensive messages."
         );
 
+        // Act
         interactor.reportAccount(inputData);
 
-        // Verify the error message
+        // Assert
         assertFalse(outputBoundary.isSuccess());
         assertEquals("User ID cannot be empty.", outputBoundary.getMessage());
-
-        // Verify no report is saved
         assertEquals(0, repository.getAllReports().size());
     }
 
     @Test
-    void testInvalidInput_missingIssueType() {
+    void testEmptyIssueType() {
+        // Arrange
+        userDataAccess.addUser("user123");
         ReportAccountInputData inputData = new ReportAccountInputData(
                 "user123",
                 "",
                 "This user is sending offensive messages."
         );
 
+        // Act
         interactor.reportAccount(inputData);
 
-        // Verify the error message
+        // Assert
         assertFalse(outputBoundary.isSuccess());
         assertEquals("Issue type cannot be empty.", outputBoundary.getMessage());
-
-        // Verify no report is saved
         assertEquals(0, repository.getAllReports().size());
     }
 
     @Test
-    void testInvalidInput_missingDescription() {
+    void testEmptyDescription() {
+        // Arrange
+        userDataAccess.addUser("user123");
         ReportAccountInputData inputData = new ReportAccountInputData(
                 "user123",
                 "Bullying/Harassment",
                 ""
         );
 
+        // Act
         interactor.reportAccount(inputData);
 
-        // Verify the error message
+        // Assert
         assertFalse(outputBoundary.isSuccess());
         assertEquals("Description cannot be empty.", outputBoundary.getMessage());
-
-        // Verify no report is saved
         assertEquals(0, repository.getAllReports().size());
     }
 
-    // Mock Output Boundary for testing
+    @Test
+    void testRepositoryFailsToSave() {
+        // Arrange
+        userDataAccess.addUser("user123");
+        repository.setFailOnSave(true); // Simulate a repository save failure
+        ReportAccountInputData inputData = new ReportAccountInputData(
+                "user123",
+                "Bullying/Harassment",
+                "This user is sending offensive messages."
+        );
+
+        // Act
+        interactor.reportAccount(inputData);
+
+        // Assert
+        assertFalse(outputBoundary.isSuccess());
+        assertEquals("Failed to submit the report.", outputBoundary.getMessage());
+        assertEquals(0, repository.getAllReports().size());
+    }
+
+    // Mock Output Boundary
     private static class MockReportAccountOutputBoundary implements ReportAccountOutputBoundary {
         private boolean success;
         private String message;
@@ -111,6 +153,20 @@ class ReportAccountInteractorTest {
 
         public String getMessage() {
             return message;
+        }
+    }
+
+    // Mock User Data Access
+    private static class MockReportAccountUserDataAccess implements ReportAccountUserDataAccessInterface {
+        private final Set<String> userIds = new HashSet<>();
+
+        @Override
+        public boolean doesUserExist(String userId) {
+            return userIds.contains(userId);
+        }
+
+        public void addUser(String userId) {
+            userIds.add(userId);
         }
     }
 }

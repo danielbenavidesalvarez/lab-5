@@ -5,6 +5,7 @@ import java.util.List;
 
 public class InMemoryReportAccountRepository implements ReportAccountRepository {
     private final List<Report> reports;
+    private boolean failOnSave = false; // Flag to simulate failure
 
     public InMemoryReportAccountRepository() {
         this.reports = new ArrayList<>();
@@ -12,6 +13,9 @@ public class InMemoryReportAccountRepository implements ReportAccountRepository 
 
     @Override
     public boolean saveReport(String reportedUserId, String issueType, String description) {
+        if (failOnSave) {
+            return false; // Simulate a failure
+        }
         try {
             Report report = new Report(reportedUserId, issueType, description);
             reports.add(report);
@@ -24,6 +28,15 @@ public class InMemoryReportAccountRepository implements ReportAccountRepository 
 
     public List<Report> getAllReports() {
         return new ArrayList<>(reports);
+    }
+
+    /**
+     * Sets the failOnSave flag to simulate repository save failures.
+     *
+     * @param failOnSave true to simulate failure, false to behave normally.
+     */
+    public void setFailOnSave(boolean failOnSave) {
+        this.failOnSave = failOnSave;
     }
 
     public static class Report {
