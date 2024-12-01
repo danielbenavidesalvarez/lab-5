@@ -1,12 +1,8 @@
 package use_case.people;
 
-import entity.CommonUser;
 import entity.User;
-import use_case.like.LikeOutputBoundary;
-import use_case.like.LikeUserDataAccessInterface;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PeopleInteractor implements PeopleInputBoundary {
@@ -25,14 +21,16 @@ public class PeopleInteractor implements PeopleInputBoundary {
         PeopleOutputData peopleOutputData = new PeopleOutputData();
 
         List<User> databaseusers = dataAccess.getUsers();
+        peopleOutputData.getPeople().addAll(databaseusers);
 //        List<CommonUser> databaseusers = new ArrayList<>();
 //        databaseusers.add(new CommonUser("ya", "123"));
 //        databaseusers.add(new CommonUser("da", "456"));
 
-        for (User user : databaseusers) {
-            JButton newbutton = new JButton(user.getName());
-            peopleOutputData.getPeoplebuttons().add(newbutton);
-        }
+//        for (User user : databaseusers) {
+//            JButton newbutton = new JButton(user.getName());
+//            peopleOutputData.getPeople().add(newbutton);
+//        }
+
         peoplepresenter.present(peopleOutputData);
 
     }

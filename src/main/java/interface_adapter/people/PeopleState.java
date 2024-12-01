@@ -1,20 +1,22 @@
 package interface_adapter.people;
 
+import entity.User;
+
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PeopleState {
-    private List<JButton> peoplebuttons;
+    private List<User> people;
 
-    public PeopleState(List<JButton> peoplebuttons) {
-        this.peoplebuttons = peoplebuttons;
+    public PeopleState(List<User> people) {
+        this.people = people;
     }
 
     public PeopleState() {
-        peoplebuttons = new ArrayList<>();
+        people = new ArrayList<>();
     }
-    public List<JButton> getPeoplebuttons() {
-        return peoplebuttons;
+    public List<User> getPeople() {
+        return people;
     }
 }

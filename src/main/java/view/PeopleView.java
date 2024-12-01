@@ -1,16 +1,11 @@
 package view;
 
+import entity.User;
 import interface_adapter.ViewManagerModel;
-import interface_adapter.like.LikeController;
-import interface_adapter.like.LikeState;
-import interface_adapter.like.LikeViewModel;
 import interface_adapter.people.PeopleController;
-import interface_adapter.people.PeopleState;
 import interface_adapter.people.PeopleViewModel;
 
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -77,11 +72,13 @@ public class PeopleView extends JPanel implements PropertyChangeListener {
 //        }
         if (evt.getPropertyName().equals("Show People")) {
 //            final PeopleState state = (PeopleState) evt.getNewValue();
-            for (JButton personbutton: peopleViewModel.getState().getPeoplebuttons()) {
-                add(personbutton);
+            for (User person: peopleViewModel.getState().getPeople()) {
+//                add(personbutton);
                 JOptionPane.showMessageDialog(
                         null,
-                        "MATCH! You can now message"+ personbutton.getText() );
+                        "" + person.getName() + " is " + person.getAge() + " years old. "
+                + person.getName() + " likes " + person.getInterests() + ". Their username is " +
+                        person.getUserId() + ". Like them now!");
             }
 
             // JOptionPane.showMessageDialog(null, "MATCH! You can now message " + state.getlikeduserID() + " in Messages" );

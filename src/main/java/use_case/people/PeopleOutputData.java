@@ -1,17 +1,18 @@
 package use_case.people;
 
-import javax.swing.*;
+import entity.User;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class PeopleOutputData {
-    private List<JButton> peoplebuttons;
+    private List<User> people;
 
     public PeopleOutputData() {
-        peoplebuttons = new ArrayList<>();
+        people = new ArrayList<>();
     }
 
-    public List<JButton> getPeoplebuttons() {
-        return peoplebuttons;
+    public List<User> getPeople() {
+        return people;
     }
 }
