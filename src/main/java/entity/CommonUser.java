@@ -1,58 +1,28 @@
 package entity;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * A concrete implementation of the User interface with added fields and methods.
+ */
 public class CommonUser implements User {
-
-    private String name;
-    private final String password;
-    private int age;
-    private String interests;
     private String userId;
-    private final Set<String> likedUsers = new HashSet<>();
-    private int likesReceivedCount; // Tracks the number of likes received by this user.
+    private String name;
+    private String password;
+    private int age;
+    private String interests; // Comma-separated interests as a string
+    private List<String> likedUsers = new ArrayList<>();
+    private int likesReceivedCount;
+
+    public CommonUser() {
+        // Default constructor required for Firebase deserialization
+    }
 
     public CommonUser(String name, String password) {
         this.name = name;
         this.password = password;
-    }
-
-    @Override
-    public String getUserId() {
-        return userId;
-    }
-
-    @Override
-    public void likeUser(User likedUser) {
-        if (likedUser == null || likedUser.getUserId() == null) {
-            throw new IllegalArgumentException("Liked user must have a valid user ID");
-        }
-        if (likedUser.getUserId().equals(this.userId)) {
-            throw new IllegalArgumentException("Users cannot like themselves");
-        }
-        if (!likedUsers.add(likedUser.getUserId())) {
-            throw new IllegalStateException("User already liked this person");
-        }
-        if (likedUser instanceof CommonUser) {
-            ((CommonUser) likedUser).incrementLikesReceived();
-        }
-    }
-
-    private void incrementLikesReceived() {
-        this.likesReceivedCount++;
-    }
-
-    public int getLikesReceivedCount() {
-        return likesReceivedCount;
-    }
-
-    public Set<String> getLikedUsers() {
-        return likedUsers;
-    }
-
-    public boolean hasLiked(String userId) {
-        return likedUsers.contains(userId);
+        this.userId = name;
     }
 
     @Override
@@ -62,9 +32,12 @@ public class CommonUser implements User {
 
     @Override
     public void setName(String name) {
-        if (name != null && !name.isEmpty()) {
-            this.name = name;
-        }
+        this.name = name;
+    }
+
+    @Override
+    public String getUserId() {
+        return userId;
     }
 
     @Override
@@ -84,9 +57,7 @@ public class CommonUser implements User {
 
     @Override
     public void setAge(int age) {
-        if (age > 0) {
-            this.age = age;
-        }
+        this.age = age;
     }
 
     @Override
@@ -96,8 +67,39 @@ public class CommonUser implements User {
 
     @Override
     public void setInterests(String interests) {
-        if (interests != null) {
-            this.interests = interests;
+        this.interests = interests;
+    }
+
+    @Override
+    public void likeUser(User likedUser) {
+        if (likedUser != null && likedUser.getUserId() != null) {
+            likedUsers.add(likedUser.getUserId());
+        } else {
+            throw new IllegalArgumentException("Liked user must have a valid user ID.");
         }
+    }
+
+    @Override
+    public List<String> getLikedUsers() {
+        return likedUsers;
+    }
+
+    @Override
+    public void setLikedUsers(List<String> likedUsers) {
+        this.likedUsers = likedUsers;
+    }
+
+    @Override
+    public int getLikesReceivedCount() {
+        return likesReceivedCount;
+    }
+
+    @Override
+    public void setLikesReceivedCount(int count) {
+        this.likesReceivedCount = count;
+    }
+
+    public boolean hasLiked(String userId) {
+        return likedUsers.contains(userId);
     }
 }

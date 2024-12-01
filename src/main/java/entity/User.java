@@ -1,6 +1,6 @@
 package entity;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * A User interface that defines the structure of user entities.
@@ -26,7 +26,11 @@ public interface User {
     void likeUser(User likedUser);
 
     // New methods for analytics
-    Set<String> getLikedUsers();
+    List<String> getLikedUsers();
     int getLikesReceivedCount();
+
+    // New methods for Firebase compatibility
+    void setLikesReceivedCount(int count); // Setter for analytics data
+    void setLikedUsers(List<String> likedUsers); // Setter for liked users
 }
 

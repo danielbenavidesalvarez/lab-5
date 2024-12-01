@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+import data_access.FirebaseUserDataAccessObject;
 import data_access.InMemoryReportAccountRepository;
 import data_access.InMemoryUserDataAccessObject;
 import data_access.ReportAccountRepository;
@@ -89,6 +90,8 @@ public class AppBuilder {
 
     // thought question: is the hard dependency below a problem?
     private final InMemoryUserDataAccessObject userDataAccessObject = new InMemoryUserDataAccessObject();
+    // Add FirebaseUserDataAccessObject as an available data access option
+    private final FirebaseUserDataAccessObject firebaseDataAccessObject = new FirebaseUserDataAccessObject();
 
     private SignupView signupView;
     private SignupViewModel signupViewModel;
@@ -104,6 +107,7 @@ public class AppBuilder {
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
+
     }
 
     /**
@@ -164,31 +168,6 @@ public class AppBuilder {
 
         cardPanel.add(likeView, likeView.getViewName());
         return this;
-//        // Step 1: Create the State and Presenter
-//        LikeState likeState = new LikeState();
-//        LikePresenter likePresenter = new LikePresenter();
-//
-//        // Step 2: Set up the Data Access Layer
-//        // Replace `InMemoryLikeDataAccess` with your actual implementation
-//        LikeUserDataAccessInterface likeDataAccess = new InMemoryUserDataAccessObject();
-//
-//        // Step 3: Create the Interactor
-//        LikeInputBoundary likeInputBoundary = new LikeInteractor(likePresenter, likeDataAccess);
-//
-//        // Step 4: Link the Presenter to the State
-//        likePresenter.setState(likeState);
-//
-//        // Step 5: Create the Controller and View
-//        LikeController likeController = new LikeController(likeInputBoundary);
-//        LikeView likeView = new LikeView(likeController, likeState);
-//
-//        // Step 6: Register the View with ViewManagerModel
-//        likeView.setViewManagerModel(viewManagerModel); // This method must exist in LikeView
-//
-//        // Step 7: Add the View to the CardLayout
-//        cardPanel.add(likeView, "LikeView");
-//
-//        return this;
     }
 
     public AppBuilder addAnalyticsView() {
@@ -287,7 +266,7 @@ public class AppBuilder {
         final SignupOutputBoundary signupOutputBoundary = new SignupPresenter(viewManagerModel,
                 signupViewModel, loginViewModel);
         final SignupInputBoundary userSignupInteractor = new SignupInteractor(
-                userDataAccessObject, signupOutputBoundary, userFactory);
+                firebaseDataAccessObject, signupOutputBoundary, userFactory);
 
         final SignupController controller = new SignupController(userSignupInteractor);
         signupView.setSignupController(controller);
@@ -302,7 +281,7 @@ public class AppBuilder {
         final LoginOutputBoundary loginOutputBoundary = new LoginPresenter(viewManagerModel,
                 loggedInViewModel, loginViewModel);
         final LoginInputBoundary loginInteractor = new LoginInteractor(
-                userDataAccessObject, loginOutputBoundary);
+                firebaseDataAccessObject, loginOutputBoundary);
 
         final LoginController loginController = new LoginController(loginInteractor);
         loginView.setLoginController(loginController);
@@ -318,7 +297,7 @@ public class AppBuilder {
                 new ChangePasswordPresenter(loggedInViewModel);
 
         final ChangePasswordInputBoundary changePasswordInteractor =
-                new ChangePasswordInteractor(userDataAccessObject, changePasswordOutputBoundary, userFactory);
+                new ChangePasswordInteractor(firebaseDataAccessObject, changePasswordOutputBoundary, userFactory);
 
         final ChangePasswordController changePasswordController =
                 new ChangePasswordController(changePasswordInteractor);
@@ -335,7 +314,7 @@ public class AppBuilder {
                 loggedInViewModel, loginViewModel);
 
         final LogoutInputBoundary logoutInteractor =
-                new LogoutInteractor(userDataAccessObject, logoutOutputBoundary);
+                new LogoutInteractor(firebaseDataAccessObject, logoutOutputBoundary);
 
         final LogoutController logoutController = new LogoutController(logoutInteractor);
         loggedInView.setLogoutController(logoutController);
@@ -348,7 +327,7 @@ public class AppBuilder {
         EditProfileOutputBoundary presenter = new EditProfilePresenter(editProfileViewModel.getState());
 
         // Use the shared userDataAccessObject
-        EditProfileInputBoundary interactor = new EditProfileInteractor(presenter, userDataAccessObject);
+        EditProfileInputBoundary interactor = new EditProfileInteractor(presenter, firebaseDataAccessObject);
 
         // Create the controller and wire it to the interactor
         EditProfileController editProfileController = new EditProfileController(interactor);
@@ -363,7 +342,7 @@ public class AppBuilder {
         final LikeOutputBoundary likeOutputBoundary = new LikePresenter(likeViewModel);
 
         final LikeInputBoundary likeInteractor =
-                new LikeInteractor(likeOutputBoundary, userDataAccessObject);
+                new LikeInteractor(likeOutputBoundary, firebaseDataAccessObject);
 
         final LikeController likeController = new LikeController(likeInteractor);
         likeView.setLikeController(likeController);
