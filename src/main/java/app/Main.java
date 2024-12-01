@@ -24,6 +24,8 @@ public class Main {
                 .addAnalyticsView()
                 .addAnalyticsUseCase()
                 .addReportAccountView()
+                .addPeopleView()
+                .addPeopleUseCase()
                 .build();
 
         application.pack();

@@ -1,6 +1,8 @@
 package data_access;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.CommonUser;
@@ -11,6 +13,7 @@ import use_case.edit_profile.UserDataAccessInterface; // Import the correct inte
 import use_case.login.LoginUserDataAccessInterface;
 import use_case.like.LikeUserDataAccessInterface; // Import LikeUserDataAccessInterface
 import use_case.logout.LogoutUserDataAccessInterface;
+import use_case.people.PeopleUserDataAccessInterface;
 import use_case.signup.SignupUserDataAccessInterface;
 import use_case.report_account.ReportAccountUserDataAccessInterface;
 
@@ -25,7 +28,8 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
         UserDataAccessInterface, // Add implementation for Edit Profile
         LikeUserDataAccessInterface,
         AnalyticsUserDataAccessInterface,
-        ReportAccountUserDataAccessInterface{
+        ReportAccountUserDataAccessInterface,
+        PeopleUserDataAccessInterface {
 
 
     private final Map<String, User> users = new HashMap<>();
@@ -126,5 +130,10 @@ public class InMemoryUserDataAccessObject implements SignupUserDataAccessInterfa
     public boolean doesUserExist(String userId) {
         // Check if the user exists in the in-memory storage
         return users.containsKey(userId);
+    }
+
+    @Override
+    public List<User> getUsers() {
+        return new ArrayList<>(users.values());
     }
 }
