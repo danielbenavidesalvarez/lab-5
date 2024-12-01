@@ -67,7 +67,15 @@ public class LikePresenter implements LikeOutputBoundary {
 
     @Override
     public void present(LikeOutputData outputData) {
-        likeViewModel.firePropertyChanged("Liked Users");;
+        if (outputData.isMatch()) {
+            likeViewModel.firePropertyChanged("Match");
+        }
+        else if (outputData.isSuccess()) {
+            likeViewModel.firePropertyChanged("Liked");
+        }
+        else {
+            likeViewModel.firePropertyChanged("Failed Like");
+        }
     }
 
 

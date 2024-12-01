@@ -19,14 +19,14 @@ public class LikeInteractor implements LikeInputBoundary {
         // Step 1: Retrieve the liking user
         User user = dataAccess.findById(inputData.getUserId());
         if (user == null) {
-            likepresenter.present(new LikeOutputData(false, "User not found"));
+            likepresenter.present(new LikeOutputData(false, "User not found", false));
             return;
         }
 
         // Step 2: Retrieve the liked user
         User likedUser = dataAccess.findById(inputData.getLikedUserId());
         if (likedUser == null) {
-            likepresenter.present(new LikeOutputData(false, "Liked user not found"));
+            likepresenter.present(new LikeOutputData(false, "Liked user not found", false));
             return;
         }
 
@@ -37,18 +37,26 @@ public class LikeInteractor implements LikeInputBoundary {
 //        }
 
         if (((entity.CommonUser) user).hasLiked(likedUser.getUserId())) {
-            likepresenter.present(new LikeOutputData(false, "User already liked this person"));
+            likepresenter.present(new LikeOutputData(false, "User already liked this person", false));
             return;
         }
 
         // Step 4: Perform the like operation
         try {
-            user.likeUser(likedUser);
-            dataAccess.save(user); // Save the updated user to persist the like
-            likepresenter.present(new LikeOutputData(true, "User liked successfully"));
+            if (likedUser.getLikedUsers().contains(user.getUserId())) {
+                user.likeUser(likedUser);
+                dataAccess.save(user); // Save the updated user to persist the like
+                likepresenter.present(new LikeOutputData(true, "Match", true));
+            }
+            else {
+                user.likeUser(likedUser);
+                dataAccess.save(user);
+                likepresenter.present(new LikeOutputData(true, "User liked", false));
+            }
+
         }
         catch (Exception e) {
-            likepresenter.present(new LikeOutputData(false, e.getMessage()));
+            likepresenter.present(new LikeOutputData(false, e.getMessage(), false));
         }
     }
 }

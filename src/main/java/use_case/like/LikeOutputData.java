@@ -5,10 +5,12 @@ import java.util.Objects;
 public class LikeOutputData {
     private final boolean success;
     private final String message;
+    private final boolean match;
 
-    public LikeOutputData(boolean success, String message) {
+    public LikeOutputData(boolean success, String message, boolean match) {
         this.success = success;
         this.message = message;
+        this.match = match;
     }
 
     public boolean isSuccess() {
@@ -18,6 +20,8 @@ public class LikeOutputData {
     public String getMessage() {
         return message;
     }
+
+    public boolean isMatch() {return match;}
 
     @Override
     public boolean equals(Object o) {

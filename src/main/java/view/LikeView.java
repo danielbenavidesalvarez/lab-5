@@ -141,11 +141,22 @@ public class LikeView extends JPanel implements PropertyChangeListener {
 //            final LikeState state = (LikeState) evt.getNewValue();
             resultLabel.setText((String) evt.getNewValue());
 //            .setText(state.getUsername());
-        } else if (evt.getPropertyName().equals("Liked Users")) {
+        } else if (evt.getPropertyName().equals("Match")) {
             final LikeState state = (LikeState) evt.getNewValue();
-            JOptionPane.showMessageDialog(null, "Liked users updated for " + state.getlikeruserID());
+            JOptionPane.showMessageDialog(null, "MATCH! You can now message " + state.getlikeduserID() + " in Messages" );
         }
-    }
+        else if (evt.getPropertyName().equals("Liked")) {
+            final LikeState state = (LikeState) evt.getNewValue();
+            JOptionPane.showMessageDialog(null, "You have successfully liked " + state.getlikeduserID());
+            }
+        else if (evt.getPropertyName().equals("Failed Like")) {
+            JOptionPane.showMessageDialog(null, "Could not like "); //+ state.getlikeruserID());
+            }
+
+
+
+        }
+
 
     private void handleBackAction() {
         if (viewManagerModel != null) {
