@@ -17,6 +17,7 @@ public class PeopleView extends JPanel implements PropertyChangeListener {
     private PeopleController peopleController;
     //  private final LikeState likeState;
     private ViewManagerModel viewManagerModel; // Add ViewManagerModel for navigation
+    private final JButton likeButton;
 
     private final JLabel resultLabel = new JLabel("");
 
@@ -36,20 +37,37 @@ public class PeopleView extends JPanel implements PropertyChangeListener {
 //
 //        add(new JLabel("User ID to Like:"));
 //        add(likedUserIdField);
+        final JPanel buttons = new JPanel();
+        buttons.setLayout(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
         JButton showpeopleButton = new JButton("Show People");
         add(showpeopleButton);
         add(resultLabel);
 
-//        JButton backButton = new JButton("Back"); // Add Back Button for navigation
-//        add(backButton);
+        likeButton = new JButton("Likes"); // Initialize the Like button
+        buttons.add(likeButton);
+
+        JButton backButton = new JButton("Back"); // Add Back Button for navigation
+        buttons.add(backButton);
 
         // Add action listener for the Like button
         showpeopleButton.addActionListener(e -> handleshowpeoplebuttonAction());
 
 //        // Add action listener for the Back button
-//        backButton.addActionListener(e -> handleBackAction());
+        backButton.addActionListener(e -> handleBackAction());
 
+        likeButton.addActionListener(
+                evt -> {
+                    if (viewManagerModel != null) {
+                        viewManagerModel.setState("like view"); // Navigate to Like View
+                        viewManagerModel.firePropertyChanged();
+                    }
+                    else {
+                        System.err.println("ViewManagerModel is not set! Cannot navigate to LikeView.");
+                    }
+                }
+        );
+        this.add(buttons);
     }
 
     void handleshowpeoplebuttonAction() {

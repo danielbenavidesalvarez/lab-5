@@ -35,7 +35,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
     private final JTextField passwordInputField = new JTextField(15);
     private final JButton changePassword;
     private final JButton editProfileButton;
-    private final JButton likeButton;
     private final JButton analyticsButton;
     private final JButton reportAccountButton;
     private final JButton peopleButton;
@@ -66,9 +65,6 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
 
         editProfileButton = new JButton("Edit Profile"); // Initialize Edit Profile button
         buttons.add(editProfileButton);
-
-        likeButton = new JButton("Likes"); // Initialize the Like button
-        buttons.add(likeButton);
 
         analyticsButton = new JButton("Analytics");
         buttons.add(analyticsButton);
@@ -137,18 +133,7 @@ public class LoggedInView extends JPanel implements PropertyChangeListener {
                     }
                 }
         );
-        // Action listener for Like button
-        likeButton.addActionListener(
-                evt -> {
-                    if (viewManagerModel != null) {
-                        viewManagerModel.setState("like view"); // Navigate to Like View
-                        viewManagerModel.firePropertyChanged();
-                    }
-                    else {
-                        System.err.println("ViewManagerModel is not set! Cannot navigate to LikeView.");
-                    }
-                }
-        );
+
         peopleButton.addActionListener(
                 evt -> {
                     if (viewManagerModel != null) {
