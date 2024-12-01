@@ -223,7 +223,7 @@ public class AppBuilder {
 
         // Create Repository and Data Access
         ReportAccountRepository reportAccountRepository = new InMemoryReportAccountRepository();
-        ReportAccountUserDataAccessInterface reportAccountUserDataAccess = new InMemoryUserDataAccessObject();
+        ReportAccountUserDataAccessInterface reportAccountUserDataAccess = new FirebaseUserDataAccessObject();
 
         // Create Interactor
         ReportAccountInteractor reportAccountInteractor = new ReportAccountInteractor(
